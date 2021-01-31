@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pin Generator</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+            integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="pin-generator half-width">
+                        <input id="generated-pin" class="form-control" type="text">
+                        <button onclick="generateShowPin('generated-pin', 4)" class="generate-btn">Generate Pin</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-section half-width">
+                        <input id="input-pin" class="form-control" type="text">
+                        <div class="numbers">
+                            <div class="calc-body">
+                                <div class="calc-button-row">
+                                    <div onclick="handleKeyInput('7')" class="button">7</div>
+                                    <div onclick="handleKeyInput('8')" class="button">8</div>
+                                    <div onclick="handleKeyInput('9')" class="button">9</div>
+                                </div>
+                                <div class="calc-button-row">
+                                    <div onclick="handleKeyInput('4')" class="button">4</div>
+                                    <div onclick="handleKeyInput('5')" class="button">5</div>
+                                    <div onclick="handleKeyInput('6')" class="button">6</div>
+                                </div>
+                                <div class="calc-button-row">
+                                    <div onclick="handleKeyInput('1')" class="button">1</div>
+                                    <div onclick="handleKeyInput('2')" class="button">2</div>
+                                    <div onclick="handleKeyInput('3')" class="button">3</div>
+                                </div>
+                                <div class="calc-button-row">
+                                    <div onclick="handleKeyInput('<')" class="button"><</div>
+                                    <div onclick="handleKeyInput('0')" class="button">0</div>
+                                    <div onclick="handleKeyInput('c')" class="button">C</div>
+                                </div>
+                                <div>
+                                    <button onclick="matchPin()" type="submit" class="submit-btn">Submit</button>
+                                    <p class="action-left"><span id="pin-try-count">3</span> try left</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notify-section">
+                        <p id="notify-no-match" class="notify">❌ Pin Didn't Match, Please try again</p>
+                        <p id="notify-match" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function setTextById(id, property, text){
+                if(property == 'value'){
+                    document.getElementById(id).value = text;
+                }
+                else if(property == 'innerText'){
+                    document.getElementById(id).innerText = text;
+                }
+            }
+
+            function generateShowPin(id, size){
+                let offset = 1;
+                while (size-- && size > 0) {
+                    offset *= 10;
+                }
+                let text = Math.floor(offset + Math.random() * 9 * offset);
+                setTextById(id, 'value', text);
+            }
+
+            function handleKeyInput(key){
+                switch (key) {
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9': {
+                        const inputPinTag = document.getElementById('input-pin');
+                        let inputPin = inputPinTag.value;
+                        inputPin += key;
+                        inputPinTag.value = inputPin;
+                        break;
+                    }
+                    case '<': {
+                        const inputPinTag = document.getElementById('input-pin');
+                        let inputPin = inputPinTag.value;
+                        inputPin = inputPin.slice(0, inputPin.length - 1);
+                        inputPinTag.value = inputPin;
+                        break;
+                    }
+                    case 'c': {
+                        document.getElementById('input-pin').value = '';
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+
+            function displayById(id, style) {
+                document.getElementById(id).style.display = style;
+            }
+
+            function matchPin(){
+                const tryCountText = document.getElementById('pin-try-count');
+                let tryCount = +tryCountText.innerText;
+                let generatedPin = document.getElementById('generated-pin').value;
+                let inputPin = document.getElementById('input-pin').value;
+                
+                if(generatedPin === inputPin && tryCount > 0){
+                    displayById('notify-match', 'block');
+                    displayById('notify-no-match', 'none');
+                }
+                else{
+                    displayById('notify-match', 'none');
+                    displayById('notify-no-match', 'block');
+                    if(tryCount > 0){
+                        tryCount--;
+                        tryCountText.innerText = tryCount;
+                    } 
+                    else{
+                        alert('No try left!')
+                    }
+                }
+            }
+        </script>
+
+    </body>
+
+</html>
