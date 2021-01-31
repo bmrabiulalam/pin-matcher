@@ -23,7 +23,8 @@
                     <div class="input-section half-width">
                         <input id="input-pin" class="form-control" type="text">
                         <div class="numbers">
-                            <div class="calc-body">
+                            <div id="digit-container" class="calc-body">
+                                <!-- // If event bubble is not used, use this onclick event
                                 <div class="calc-button-row">
                                     <div onclick="handleKeyInput('7')" class="button">7</div>
                                     <div onclick="handleKeyInput('8')" class="button">8</div>
@@ -47,14 +48,38 @@
                                 <div>
                                     <button onclick="matchPin()" type="submit" class="submit-btn">Submit</button>
                                     <p class="action-left"><span id="pin-try-count">3</span> try left</p>
+                                </div> -->
+                                <div class="calc-button-row">
+                                    <div class="button">7</div>
+                                    <div class="button">8</div>
+                                    <div class="button">9</div>
+                                </div>
+                                <div class="calc-button-row">
+                                    <div class="button">4</div>
+                                    <div class="button">5</div>
+                                    <div class="button">6</div>
+                                </div>
+                                <div class="calc-button-row">
+                                    <div class="button">1</div>
+                                    <div class="button">2</div>
+                                    <div class="button">3</div>
+                                </div>
+                                <div class="calc-button-row">
+                                    <div class="button"><</div>
+                                    <div class="button">0</div>
+                                    <div class="button">C</div>
+                                </div>
+                                <div>
+                                    <button onclick="matchPin()" type="submit" class="submit-btn">Submit</button>
+                                    <p class="action-left"><span id="pin-try-count">3</span> try left</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="notify-section">
-                        <p id="notify-no-match" class="notify">❌ Pin Didn't Match, Please try again</p>
-                        <p id="notify-match" class="notify">✅ Pin Matched... Secret door is opening for you</p>
-                    </div>
+                </div>
+                <div class="notify-section">
+                    <p id="notify-no-match" class="notify">❌ Pin Didn't Match, Please try again</p>
+                    <p id="notify-match" class="notify">✅ Pin Matched... Secret door is opening for you</p>
                 </div>
             </div>
         </div>
@@ -78,39 +103,40 @@
                 setTextById(id, 'value', text);
             }
 
-            function handleKeyInput(key){
-                switch (key) {
-                    case '0':
-                    case '1':
-                    case '2':
-                    case '3':
-                    case '4':
-                    case '5':
-                    case '6':
-                    case '7':
-                    case '8':
-                    case '9': {
-                        const inputPinTag = document.getElementById('input-pin');
-                        let inputPin = inputPinTag.value;
-                        inputPin += key;
-                        inputPinTag.value = inputPin;
-                        break;
-                    }
-                    case '<': {
-                        const inputPinTag = document.getElementById('input-pin');
-                        let inputPin = inputPinTag.value;
-                        inputPin = inputPin.slice(0, inputPin.length - 1);
-                        inputPinTag.value = inputPin;
-                        break;
-                    }
-                    case 'c': {
-                        document.getElementById('input-pin').value = '';
-                        break;
-                    }
-                    default:
-                        break;
-                }
-            }
+            // If event bubble is not used, use this function on onclick event
+            // function handleKeyInput(key){
+            //     switch (key) {
+            //         case '0':
+            //         case '1':
+            //         case '2':
+            //         case '3':
+            //         case '4':
+            //         case '5':
+            //         case '6':
+            //         case '7':
+            //         case '8':
+            //         case '9': {
+            //             const inputPinTag = document.getElementById('input-pin');
+            //             let inputPin = inputPinTag.value;
+            //             inputPin += key;
+            //             inputPinTag.value = inputPin;
+            //             break;
+            //         }
+            //         case '<': {
+            //             const inputPinTag = document.getElementById('input-pin');
+            //             let inputPin = inputPinTag.value;
+            //             inputPin = inputPin.slice(0, inputPin.length - 1);
+            //             inputPinTag.value = inputPin;
+            //             break;
+            //         }
+            //         case 'c': {
+            //             document.getElementById('input-pin').value = '';
+            //             break;
+            //         }
+            //         default:
+            //             break;
+            //     }
+            // }
 
             function displayById(id, style) {
                 document.getElementById(id).style.display = style;
@@ -138,6 +164,25 @@
                     }
                 }
             }
+
+            // Used event bubble to catch button push
+            const buttonContainer = document.getElementById('digit-container');
+            buttonContainer.addEventListener('click', e => {
+                const digit = e.target.innerText;
+                if (isNaN(digit)) {
+                    if(digit == 'C'){
+                        document.getElementById('input-pin').value = '';
+                    }
+                    else if(digit == '<'){
+                        const inputPin = document.getElementById('input-pin');
+                        let text = inputPin.value;
+                        inputPin.value = text.slice(0, text.length - 1);
+                    }
+                } else {
+                    const inputPin = document.getElementById('input-pin');
+                    inputPin.value += digit;
+                }
+            });
         </script>
 
     </body>
